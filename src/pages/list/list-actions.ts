@@ -110,13 +110,6 @@ export function newTaskDismissDialog(): Action {
     };
 }
 
-function newTaskValidationChange(validationState: { [K in keyof ITask]?: string | null }): Action & IPayload<{ [K in keyof ITask]?: string | null }> {
-    return {
-        type: listActions.NEW_TASK_VALIDATION_CHANGE,
-        payload: validationState,
-    }
-}
-
 export function fetchTaskList(): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
     return async dispatch => {
         dispatch(requestList());

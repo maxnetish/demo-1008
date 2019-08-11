@@ -3,11 +3,13 @@ import {FunctionComponent} from "react";
 import {ITask, ITaskWithValidation} from "../../dto/task";
 
 export interface IDetailsComponentProps {
-    task?: ITaskWithValidation;
+    task?: ITask;
     deleting: boolean;
     saving: boolean;
     taskInitial?: ITask;
     changed: boolean;
+    error: string;
+    validation: {[K in keyof ITask]?: string | null}
 }
 
 export interface IDetailsComponentEvents {

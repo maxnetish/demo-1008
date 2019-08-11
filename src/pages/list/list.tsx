@@ -1,7 +1,7 @@
 import * as React from "react";
-import {createRef, FormEvent, FunctionComponent} from "react";
+import {FormEvent} from "react";
 import {ITask, ITaskWithDelete, ITaskWithValidation} from "../../dto/task";
-import {RouteComponentProps, withRouter} from "react-router";
+import {RouteComponentProps} from "react-router";
 import {ThunkDispatch} from "redux-thunk";
 import {AnyAction} from "redux";
 import {
@@ -13,14 +13,15 @@ import {
     saveNewTask
 } from "./list-actions";
 import {connect} from "react-redux";
-import {ModalDialogComponent} from "../../modal/modal";
+import {ModalDialogComponent} from "../../components/modal/modal";
+import {TaskDetailFormComponent} from "../../components/task-detail-form/task-detail-form";
 
 export interface IListComponentProps {
     taskList: ITaskWithDelete[];
     listError?: string | null;
     listLoading: boolean;
     listLoaded: boolean;
-    newTask: ITaskWithValidation | null;
+    newTask: ITask | null;
     newTaskError?: string | null;
     newTaskSaving: boolean;
     newTaskDialogOpen: boolean;
@@ -84,13 +85,9 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
                             onClick={props.dismissNewTaskDialog}>
                         <i className="fas fa-times"/>
                     </button>
-                    <form className="pure-form pure-form-stacked">
-                        <label htmlFor="new_task_title">Краткое описание</label>
-                        <input id="new_task_title" type="text" value={(props.newTask && props.newTask.title) || ''}
-                               onChange={onNewTaskTitleChanged}/>
-                        {(props.newTaskValidation.title && props.newTaskSubmitOnce) ?
-                            <span className="pure-form-message">{props.newTaskValidation.title}</span> : null}
-                    </form>
+                    <TaskDetailFormComponent data={props.newTask} validation={props.newTaskValidation}
+                                             showValidationError={props.newTaskSubmitOnce}
+                                             fieldChanged={{title: props.newTaskTitleChanged}}/>
                     <div>
                         <button type="button" className="app-button green" disabled={props.newTaskSaving}
                                 onClick={props.requestSaveNewTask}>Создать

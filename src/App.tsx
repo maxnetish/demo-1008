@@ -5,7 +5,7 @@ import './../node_modules/purecss/build/grids-responsive.css';
 import './App.css';
 import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
 import {ListComponent} from "./pages/list/list";
-import {DetailComponent} from "./pages/details/details";
+import {DetailComponent} from "./pages/detail/detail";
 
 const App: React.FC = () => {
     return (
