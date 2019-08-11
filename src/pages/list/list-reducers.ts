@@ -6,6 +6,7 @@ import {ITask} from "../../dto/task";
 const initialState: IListComponentProps = {
     listError: null,
     listLoading: false,
+    listLoaded: false,
     newTaskDialogOpen: false,
     newTaskError: null,
     newTaskSaving: false,
@@ -16,7 +17,7 @@ const initialState: IListComponentProps = {
     newTaskSubmitOnce: false,
 };
 
-export const listRedusers: Reducer<IListComponentProps> = (state = initialState, action) => {
+export const listReduser: Reducer<IListComponentProps> = (state = initialState, action) => {
     switch (action.type) {
         case listActions.NEW_TASK_DISMISS_DIALOG:
             if(!state.newTaskDialogOpen) {
@@ -41,6 +42,7 @@ export const listRedusers: Reducer<IListComponentProps> = (state = initialState,
                         title: state.newTask ? state.newTask.title : '',
                     }),
                     newTaskSaving: false,
+                    newTaskDialogOpen: false,
                 });
             }
             return state;
@@ -104,6 +106,7 @@ export const listRedusers: Reducer<IListComponentProps> = (state = initialState,
             return Object.assign({}, state, {
                 listError: action.payload,
                 listLoading: false,
+                listLoaded: true,
             });
         }
         case listActions.LIST_RESPONSE_SUCCESS: {
@@ -114,6 +117,7 @@ export const listRedusers: Reducer<IListComponentProps> = (state = initialState,
                 })),
                 listError: null,
                 listLoading: false,
+                listLoaded: true,
             });
         }
         case listActions.LIST_REQUEST: {
@@ -128,7 +132,7 @@ export const listRedusers: Reducer<IListComponentProps> = (state = initialState,
         }
         case listActions.NEW_TASK_SUBMIT_ONCE: {
             return Object.assign({}, state, {
-                newTaskSubmitOnce: action.payload
+                newTaskSubmitOnce: true
             });
         }
         default:

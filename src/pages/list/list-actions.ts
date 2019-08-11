@@ -44,7 +44,7 @@ function responseListError(err: string): Action & IPayload<string> {
     };
 }
 
-function requestNewTask(): Action {
+export function requestNewTask(): Action {
     return {
         type: listActions.LIST_REQUEST_NEW,
     };
@@ -71,7 +71,7 @@ function responseListDeleteError(payload: { error: string, taskId: number }): Ac
     };
 }
 
-function newTaskTitleChange(newTitle: string): Action & IPayload<string> {
+export function newTaskTitleChange(newTitle: string): Action & IPayload<string> {
     return {
         type: listActions.NEW_TASK_TITLE_CHANGED,
         payload: newTitle,
@@ -104,7 +104,7 @@ function newTaskSaveResponseError(error: string): Action & IPayload<string> {
     };
 }
 
-function newTaskDismissDialog(): Action {
+export function newTaskDismissDialog(): Action {
     return {
         type: listActions.NEW_TASK_DISMISS_DIALOG,
     };
@@ -117,7 +117,7 @@ function newTaskValidationChange(validationState: { [K in keyof ITask]?: string 
     }
 }
 
-export function fetchTaskList(): ThunkAction<Promise<void>, IListComponentProps, {}, AnyAction> {
+export function fetchTaskList(): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
     return async dispatch => {
         dispatch(requestList());
         try {
@@ -140,7 +140,7 @@ export function fetchTaskList(): ThunkAction<Promise<void>, IListComponentProps,
     };
 }
 
-export function deleteTask(task: ITask): ThunkAction<Promise<void>, IListComponentProps, {}, AnyAction> {
+export function deleteTask(task: ITask): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
     return async dispatch => {
         if (!task.id) {
             return;
@@ -166,13 +166,14 @@ export function deleteTask(task: ITask): ThunkAction<Promise<void>, IListCompone
     };
 }
 
-export function saveNewTask(): ThunkAction<Promise<void>, IListComponentProps, {}, AnyAction> {
+export function saveNewTask(): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
     return async (dispatch, getState) => {
-        const {newTask, newTaskValidation} = getState();
+        const {newTask, newTaskValidation} = getState().taskList;
         if (!newTask) {
             return;
         }
-        if (Object.entries(newTaskValidation).some(keyVal => !keyVal[1])) {
+        dispatch(newTaskSubmitOnce())
+        if (Object.entries(newTaskValidation).some(keyVal => keyVal[1])) {
             return;
         }
         try {
