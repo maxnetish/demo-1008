@@ -1,3 +1,3 @@
-export interface IPayload<T> {
+export interface IPayload<T = any> {
     payload: T
 }

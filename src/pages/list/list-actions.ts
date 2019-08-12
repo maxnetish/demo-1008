@@ -110,7 +110,7 @@ export function newTaskDismissDialog(): Action {
     };
 }
 
-export function fetchTaskList(): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
+export function fetchTaskList(): ThunkAction<Promise<void>, { taskList: IListComponentProps }, {}, Action | Action & IPayload> {
     return async dispatch => {
         dispatch(requestList());
         try {
@@ -133,7 +133,7 @@ export function fetchTaskList(): ThunkAction<Promise<void>, {taskList: IListComp
     };
 }
 
-export function deleteTask(task: ITask): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
+export function deleteTask(task: ITask): ThunkAction<Promise<void>, { taskList: IListComponentProps }, {}, AnyAction> {
     return async dispatch => {
         if (!task.id) {
             return;
@@ -159,13 +159,13 @@ export function deleteTask(task: ITask): ThunkAction<Promise<void>, {taskList: I
     };
 }
 
-export function saveNewTask(): ThunkAction<Promise<void>, {taskList: IListComponentProps}, {}, AnyAction> {
+export function saveNewTask(): ThunkAction<Promise<void>, { taskList: IListComponentProps }, {}, AnyAction> {
     return async (dispatch, getState) => {
         const {newTask, newTaskValidation} = getState().taskList;
         if (!newTask) {
             return;
         }
-        dispatch(newTaskSubmitOnce())
+        dispatch(newTaskSubmitOnce());
         if (Object.entries(newTaskValidation).some(keyVal => keyVal[1])) {
             return;
         }

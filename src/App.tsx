@@ -17,10 +17,14 @@ const App: React.FC = () => {
                         <ListComponent {...routeProps}/>
                     )
                 }/>
-                <Route path="/items/:id" exact={true} component={DetailComponent}/>
+                <Route path="/items/:id" exact={true} render={routeProps =>
+                    (
+                        <DetailComponent {...routeProps}/>
+                    )
+                }/>
             </Router>
         </div>
     );
-}
+};
 
 export default App;
