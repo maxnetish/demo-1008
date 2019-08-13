@@ -6,7 +6,11 @@ interface IModalDialogComponentProps {
     className?: string;
 }
 
-export class ModalDialogComponent extends PureComponent<IModalDialogComponentProps> {
+interface IModalDialogComponentEvents {
+    modalDismissed?: () => void;
+}
+
+export class ModalDialogComponent extends PureComponent<IModalDialogComponentProps & IModalDialogComponentEvents> {
     private modalRef = createRef<HTMLDialogElement>();
 
     componentDidUpdate(prevProps: Readonly<IModalDialogComponentProps>, prevState: Readonly<{}>, snapshot?: any): void {
@@ -17,9 +21,15 @@ export class ModalDialogComponent extends PureComponent<IModalDialogComponentPro
                 this.modalRef.current.close()
             }
         }
+        // this.modalRef.
+        // if(this.modalRef.current) {
+        //     // this.modalRef.current.addEventListener('close', )
+        // }
     }
 
     render() {
+        // TODO pass close event to parent
+        // when user close dialog with esc key we have to track this closing to sunc with state
         return (
             <dialog ref={this.modalRef} className={this.props.className}>
                 {this.props.children}

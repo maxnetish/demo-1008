@@ -18,12 +18,12 @@ interface ITaskDetailFormEvents {
 export const TaskDetailFormComponent: FunctionComponent<ITaskDetailFormProps & ITaskDetailFormEvents> = props => {
     return (
         <Fragment>
-            {props.data ? <form className={`pure-form pure-form-stacked ${props.className}`}>
+            {props.data ? <form className={`pure-form pure-form-stacked app-form ${props.className}`}>
                 <label htmlFor="new_task_title">Краткое описание</label>
-                <input id="new_task_title" type="text" value={props.data.title}
+                <input className="app-text-input" id="new_task_title" type="text" value={props.data.title}
                        onChange={e => props.fieldChanged.title ? props.fieldChanged.title(e.currentTarget.value) : null}/>
                 {(props.validation.title && props.showValidationError) ?
-                    <span className="pure-form-message">{props.validation.title}</span> : null}
+                    <span className="pure-form-message red-warning">{props.validation.title}</span> : null}
             </form> : null}
         </Fragment>
     );

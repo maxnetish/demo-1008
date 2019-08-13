@@ -81,14 +81,14 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
         <div>
             <ModalDialogComponent className="app-modal" openModal={props.newTaskDialogOpen}>
                 <div className="dialog-new-task-ct">
-                    <button type="button" className="app-button cross-close-dialog red"
+                    <button type="button" className="app-button icon cross-close-dialog red"
                             onClick={props.dismissNewTaskDialog}>
                         <i className="fas fa-times"/>
                     </button>
                     <TaskDetailFormComponent data={props.newTask} validation={props.newTaskValidation}
                                              showValidationError={props.newTaskSubmitOnce}
                                              fieldChanged={{title: props.newTaskTitleChanged}}/>
-                    <div>
+                    <div className="app-dialog-footer">
                         <button type="button" className="app-button green" disabled={props.newTaskSaving}
                                 onClick={props.requestSaveNewTask}>Создать
                         </button>
@@ -102,16 +102,24 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
                     </button>
                 </div>
             </div>
-            <table>
+            <table className="pure-table pure-table-bordered table-tasks">
+                <colgroup>
+                    <col style={{width: '250px'}}/>
+                    <col/>
+                    <col style={{width: '130px'}}/>
+                </colgroup>
                 <tbody>
                 {props.taskList.map(task => (
                     <tr key={task.id}>
                         <td>Задача №{task.id}</td>
                         <td>{task.title}</td>
-                        <td>
-                            <Link className="app-button icon grey" to={`/items/${task.id}`}>Ред</Link>
+                        <td className="buttons-cell">
+                            <Link className="app-button icon grey" to={`/items/${task.id}`}>
+                                <i className="fas fa-pencil-alt"></i>
+                            </Link>
                             <button type="button" className="app-button icon red"
-                                    onClick={props.requestDeleteTask.bind(null, task)}>Уд
+                                    onClick={props.requestDeleteTask.bind(null, task)}>
+                                <i className="fas fa-trash-alt"></i>
                             </button>
                         </td>
                     </tr>
