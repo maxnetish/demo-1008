@@ -20,7 +20,6 @@ export const listActions = {
     NEW_TASK_REQUEST_SAVE: Symbol(),
     NEW_TASK_RESPONSE_SAVE_SUCCESS: Symbol(),
     NEW_TASK_RESPONSE_SAVE_ERROR: Symbol(),
-    NEW_TASK_VALIDATION_CHANGE: Symbol(),
     NEW_TASK_SUBMIT_ONCE: Symbol()
 };
 

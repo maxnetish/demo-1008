@@ -1,7 +1,7 @@
 import {IListComponentProps} from "./list";
 import {Action, AnyAction, Reducer} from "redux";
 import {listActions} from "./list-actions";
-import {ITask} from "../../dto/task";
+import {ITask, ITaskWithDelete} from "../../dto/task";
 import {IPayload} from "../../dto/payload";
 import {ITaskListResponse} from "../../dto/task-list-response";
 import {ITaskCreateResponse} from "../../dto/task-create-response";
@@ -21,110 +21,138 @@ const initialState: IListComponentProps = {
 };
 
 const reduceActions = {
-    [listActions.LIST_REQUEST]: (state: IListComponentProps) => Object.assign({}, state, {
-        listLoading: true,
-    }),
-    [listActions.LIST_REQUEST_DELETE]: (state: IListComponentProps, action: Action & IPayload<ITask>) => {
-        const indexOfDeletedTask = state.taskList.findIndex(t => t.id === action.payload.id);
-        const newTaskList = state.taskList.slice();
-        newTaskList.splice(indexOfDeletedTask, 1, Object.assign({}, newTaskList[indexOfDeletedTask], {
-            deleting: true,
-        }));
-        return Object.assign({}, state, {
-            taskList: newTaskList
-        });
-    },
-    [listActions.LIST_REQUEST_NEW]: (state: IListComponentProps) => Object.assign({}, state, {
-        newTask: {
-            title: ''
-        },
-        newTaskError: null,
-        newTaskDialogOpen: true,
-        newTaskValidation: {
-            title: 'Заголовок не может быть пустым'
-        },
-        newTaskSubmitOnce: false,
-    }),
-    [listActions.LIST_RESPONSE_DELETE_ERROR]: (state: IListComponentProps, action: Action & IPayload<{ error: string, taskId: number }>) => {
-        const indexOfErrorTask = state.taskList.findIndex(t => t.id === action.payload.taskId);
-        const newTaskList = state.taskList.slice();
-        newTaskList.splice(indexOfErrorTask, 1, Object.assign({}, newTaskList[indexOfErrorTask], {
-            deleteError: action.payload.error,
-            deleting: false,
-        }));
-        return Object.assign({}, state, {
-            taskList: newTaskList
-        });
-    },
-    [listActions.LIST_RESPONSE_DELETE_SUCCESS]: (state: IListComponentProps, action: Action & IPayload<number>) => {
-        const newTaskList = state.taskList.slice();
-        const indexOfDeletedTask = newTaskList.findIndex(t => t.id === action.payload);
-        newTaskList.splice(indexOfDeletedTask, 1);
-        return Object.assign({}, state, {
-            taskList: newTaskList
-        });
-    },
-    [listActions.LIST_RESPONSE_ERROR]: (state: IListComponentProps, action: Action & IPayload<string>) => Object.assign({}, state, {
-        listError: action.payload,
-        listLoading: false,
-        listLoaded: true,
-    }),
-    [listActions.LIST_RESPONSE_SUCCESS]: (state: IListComponentProps, action: Action & IPayload<ITaskListResponse>) => Object.assign({}, state, {
-        taskList: action.payload.data.map((t: ITask) => Object.assign(t, {
-            deleteError: null,
-            deleting: false,
-        })),
-        listError: null,
-        listLoading: false,
-        listLoaded: true,
-    }),
-    [listActions.NEW_TASK_DISMISS_DIALOG]: (state: IListComponentProps) => {
-        if (!state.newTaskDialogOpen) {
-            return state;
-        }
-        return Object.assign({}, state, {
-            newTask: null,
-            newTaskDialogOpen: false,
-            newTaskValidation: {},
-            newTaskSubmitOnce: false,
-        });
-    },
-    [listActions.NEW_TASK_REQUEST_SAVE]: (state: IListComponentProps) => Object.assign({}, state, {
-        newTaskSaving: true,
-    }),
-    [listActions.NEW_TASK_RESPONSE_SAVE_ERROR]: (state: IListComponentProps, action: Action & IPayload<string>) => Object.assign({}, state, {
-        newTaskError: action.payload,
-        newTaskSaving: false,
-    }),
-    [listActions.NEW_TASK_RESPONSE_SAVE_SUCCESS]: (state: IListComponentProps, action: Action & IPayload<ITaskCreateResponse>) => {
-        if (action.payload.id) {
-            return Object.assign({}, state, {
-                taskList: state.taskList.concat({
-                    id: action.payload.id,
-                    title: state.newTask ? state.newTask.title : '',
-                }),
+        [listActions.LIST_REQUEST]:
+            (state: IListComponentProps): IListComponentProps => ({
+                ...state,
+                listLoading: true,
+            }),
+        [listActions.LIST_REQUEST_DELETE]:
+            (state: IListComponentProps, action: Action & IPayload<ITask>): IListComponentProps => {
+                const indexOfDeletingTask = state.taskList.findIndex(t => t.id === action.payload.id);
+                const newTaskList = [...state.taskList];
+                newTaskList[indexOfDeletingTask] = {
+                    ...newTaskList[indexOfDeletingTask],
+                    deleting: true
+                };
+                return {
+                    ...state,
+                    taskList: newTaskList,
+                };
+            },
+        [listActions.LIST_REQUEST_NEW]:
+            (state: IListComponentProps): IListComponentProps => ({
+                ...state,
+                newTask: {
+                    title: ''
+                },
+                newTaskError: null,
+                newTaskDialogOpen: true,
+                newTaskValidation: {
+                    title: 'Заголовок не может быть пустым'
+                },
+                newTaskSubmitOnce: false,
+            }),
+        [listActions.LIST_RESPONSE_DELETE_ERROR]:
+            (state: IListComponentProps, action: Action & IPayload<{ error: string, taskId: number }>): IListComponentProps => {
+                const indexOfErrorTask = state.taskList.findIndex(t => t.id === action.payload.taskId);
+                const newTaskList = [...state.taskList];
+                newTaskList[indexOfErrorTask] = {
+                    ...newTaskList[indexOfErrorTask],
+                    deleteError: action.payload.error,
+                    deleting: false,
+                };
+                return {
+                    ...state,
+                    taskList: newTaskList
+                };
+            },
+        [listActions.LIST_RESPONSE_DELETE_SUCCESS]:
+            (state: IListComponentProps, action: Action & IPayload<number>): IListComponentProps => {
+                const newTaskList = [...state.taskList];
+                const indexOfDeletedTask = newTaskList.findIndex(t => t.id === action.payload);
+                newTaskList.splice(indexOfDeletedTask, 1);
+                return {
+                    ...state,
+                    taskList: newTaskList
+                };
+            },
+        [listActions.LIST_RESPONSE_ERROR]:
+            (state: IListComponentProps, action: Action & IPayload<string>): IListComponentProps => ({
+                ...state,
+                listError: action.payload,
+                listLoading: false,
+                listLoaded: true,
+            }),
+        [listActions.LIST_RESPONSE_SUCCESS]:
+            (state: IListComponentProps, action: Action & IPayload<ITaskListResponse>): IListComponentProps => ({
+                ...state,
+                taskList: action.payload.data.map((task: ITask): ITaskWithDelete => ({
+                    ...task,
+                    deleteError: null,
+                    deleting: false
+                })),
+                listError: null,
+                listLoading: false,
+                listLoaded: true,
+            }),
+        [listActions.NEW_TASK_DISMISS_DIALOG]:
+            (state: IListComponentProps): IListComponentProps => {
+                if (!state.newTaskDialogOpen) {
+                    return state;
+                }
+                return {
+                    ...state,
+                    newTask: null,
+                    newTaskDialogOpen: false,
+                    newTaskValidation: {},
+                    newTaskSubmitOnce: false,
+                };
+            },
+        [listActions.NEW_TASK_REQUEST_SAVE]:
+            (state: IListComponentProps): IListComponentProps => ({
+                ...state,
+                newTaskSaving: true,
+            }),
+        [listActions.NEW_TASK_RESPONSE_SAVE_ERROR]:
+            (state: IListComponentProps, action: Action & IPayload<string>): IListComponentProps => ({
+                ...state,
+                newTaskError: action.payload,
                 newTaskSaving: false,
-                newTaskDialogOpen: false,
-            });
-        }
-        return state;
-    },
-    [listActions.NEW_TASK_SUBMIT_ONCE]: (state: IListComponentProps) => Object.assign({}, state, {
-        newTaskSubmitOnce: true
-    }),
-    [listActions.NEW_TASK_TITLE_CHANGED]: (state: IListComponentProps, action: Action & IPayload<string>) => Object.assign({}, state, {
-        newTask: {
-            id: state.newTask && state.newTask.id,
-            title: action.payload,
-        },
-        newTaskValidation: {
-            title: action.payload ? null : 'Заголовок не может быть пустым'
-        }
-    }),
-    [listActions.NEW_TASK_VALIDATION_CHANGE]: (state: IListComponentProps, action: Action & IPayload<string>) => Object.assign({}, state, {
-        newTaskValidation: action.payload
-    })
-};
+            }),
+        [listActions.NEW_TASK_RESPONSE_SAVE_SUCCESS]:
+            (state: IListComponentProps, action: Action & IPayload<ITaskCreateResponse>): IListComponentProps => {
+                if (!action.payload.id) {
+                    return state;
+                }
+                return {
+                    ...state,
+                    taskList: state.taskList.concat({
+                        id: action.payload.id,
+                        title: state.newTask ? state.newTask.title : '',
+                    }),
+                    newTaskSaving: false,
+                    newTaskDialogOpen: false,
+                };
+            },
+        [listActions.NEW_TASK_SUBMIT_ONCE]:
+            (state: IListComponentProps): IListComponentProps => ({
+                ...state,
+                newTaskSubmitOnce: true
+            }),
+        [listActions.NEW_TASK_TITLE_CHANGED]:
+            (state: IListComponentProps, action: Action & IPayload<string>): IListComponentProps => ({
+                ...state,
+                newTask: {
+                    ...state.newTask,
+                    title: action.payload,
+                },
+                newTaskValidation: {
+                    ...state.newTaskValidation,
+                    title: action.payload ? null : 'Заголовок не может быть пустым'
+                }
+            }),
+    }
+;
 
 export const listReduser: Reducer<IListComponentProps, Action & IPayload> = (state = initialState, action) => {
     if (reduceActions.hasOwnProperty(action.type)) {
