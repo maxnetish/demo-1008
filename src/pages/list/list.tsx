@@ -15,6 +15,7 @@ import {
 import {connect} from "react-redux";
 import {ModalDialogComponent} from "../../components/modal/modal";
 import {TaskDetailFormComponent} from "../../components/task-detail-form/task-detail-form";
+import {Link} from "react-router-dom";
 
 export interface IListComponentProps {
     taskList: ITaskWithDelete[];
@@ -68,8 +69,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<{ taskList: IListComponentPr
 }
 
 export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props: IListComponentProps & IListComponentEvents & RouteComponentProps) => {
-    console.log(props);
-    if (!props.listLoaded) {
+    if (!props.listLoaded && !props.listLoading) {
         props.requestList();
     }
 
@@ -109,7 +109,7 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
                         <td>Задача №{task.id}</td>
                         <td>{task.title}</td>
                         <td>
-                            <button type="button" className="app-button icon grey">Ред</button>
+                            <Link className="app-button icon grey" to={`/items/${task.id}`}>Ред</Link>
                             <button type="button" className="app-button icon red"
                                     onClick={props.requestDeleteTask.bind(null, task)}>Уд
                             </button>

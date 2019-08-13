@@ -20,7 +20,8 @@ export const listActions = {
     NEW_TASK_REQUEST_SAVE: Symbol(),
     NEW_TASK_RESPONSE_SAVE_SUCCESS: Symbol(),
     NEW_TASK_RESPONSE_SAVE_ERROR: Symbol(),
-    NEW_TASK_SUBMIT_ONCE: Symbol()
+    NEW_TASK_SUBMIT_ONCE: Symbol(),
+    LIST_BECOME_DIRTY: Symbol(),
 };
 
 function requestList(): Action {
@@ -106,6 +107,12 @@ function newTaskSaveResponseError(error: string): Action & IPayload<string> {
 export function newTaskDismissDialog(): Action {
     return {
         type: listActions.NEW_TASK_DISMISS_DIALOG,
+    };
+}
+
+export function taskListNeedReload(): Action {
+    return {
+        type: listActions.LIST_BECOME_DIRTY
     };
 }
 

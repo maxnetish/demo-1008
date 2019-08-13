@@ -15,7 +15,11 @@ function taskEqwal(t1: ITask | null, t2: ITask | null): boolean {
             }
         }
     }
-    return !(t1 || t2);
+    if (!t1) {
+        return false;
+    }
+    return !!t2;
+
 }
 
 const initialState: IDetailsComponentProps = {
@@ -26,7 +30,6 @@ const initialState: IDetailsComponentProps = {
     error: null,
     saving: false,
     taskInitial: null,
-    loaded: false,
     loading: false,
     saveOnce: false,
 };
@@ -35,13 +38,13 @@ const reducersByAction = {
     [taskDetailActions.TASK_REQUEST]:
         (state: IDetailsComponentProps): IDetailsComponentProps => ({
             ...state,
-            loading: true
+            loading: true,
+            task: null
         }),
     [taskDetailActions.TASK_RESPONSE_SUCCESS]:
         (state: IDetailsComponentProps, action: Action & IPayload<ITask>): IDetailsComponentProps => ({
             ...state,
             loading: false,
-            loaded: true,
             taskInitial: {...action.payload},
             error: null,
             hasChanges: false,
@@ -52,18 +55,24 @@ const reducersByAction = {
         (state: IDetailsComponentProps, action: Action & IPayload<string>): IDetailsComponentProps => ({
             ...state,
             loading: false,
-            loaded: true,
             error: action.payload,
         }),
     [taskDetailActions.TASK_TITLE_CHANGED]:
-        (state: IDetailsComponentProps, action: Action & IPayload<string>): IDetailsComponentProps => ({
-            ...state,
-            task: {
+        (state: IDetailsComponentProps, action: Action & IPayload<string>): IDetailsComponentProps => {
+            const newTask = {
                 ...state.task,
                 title: action.payload
-            },
-            hasChanges: !taskEqwal(state.task, state.taskInitial),
-        }),
+            };
+            return {
+                ...state,
+                task: newTask,
+                hasChanges: !taskEqwal(newTask, state.taskInitial),
+                validation: {
+                    ...state.validation,
+                    title: newTask.title ? null : 'Заголовок не может быть пустым',
+                }
+            };
+        },
     [taskDetailActions.TASK_SAVE_ONCE]:
         (state: IDetailsComponentProps): IDetailsComponentProps => ({
             ...state,
@@ -108,14 +117,6 @@ const reducersByAction = {
             deleting: false,
             error: action.payload,
         }),
-    [taskDetailActions.TASK_VALIDATE]:
-        (state: IDetailsComponentProps): IDetailsComponentProps => ({
-            ...state,
-            validation: {
-                ...state.validation,
-                title: (state.task && !state.task.title) ? 'Заголовок не может быть пустым' : null
-            }
-        })
 };
 
 export const taskReduser: Reducer<IDetailsComponentProps, Action & IPayload> = (state = initialState, action) => {

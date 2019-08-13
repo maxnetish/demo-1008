@@ -6,6 +6,8 @@ import {ITaskDeleteResponse} from "../../dto/task-delete-response";
 import {ThunkAction} from "redux-thunk";
 import {IDetailsComponentProps} from "./detail";
 import {ITaskListResponse} from "../../dto/task-list-response";
+import {History} from "history";
+import {taskListNeedReload} from "../list/list-actions";
 
 export const taskDetailActions = {
     TASK_REQUEST: Symbol(),
@@ -19,7 +21,6 @@ export const taskDetailActions = {
     TASK_DELETE_REQUEST: Symbol(),
     TASK_DELETE_RESPONSE_SUCCESS: Symbol(),
     TASK_DELETE_RESPONSE_ERROR: Symbol(),
-    TASK_VALIDATE: Symbol(),
 };
 
 function taskRequest(): Action {
@@ -95,12 +96,6 @@ function taskDeleteResponseError(error: string): Action & IPayload<string> {
     };
 }
 
-function taskValidate(): Action {
-    return {
-        type: taskDetailActions.TASK_VALIDATE,
-    };
-}
-
 export function fetchTask(id: number): ThunkAction<Promise<void>, { task: IDetailsComponentProps }, {}, Action | Action & IPayload> {
     return async dispatch => {
         try {
@@ -123,14 +118,13 @@ export function fetchTask(id: number): ThunkAction<Promise<void>, { task: IDetai
                 return;
             }
             dispatch(taskResponseSuccess(task));
-            dispatch(taskValidate());
         } catch (e) {
             dispatch(taskResponseError(e.toString()));
         }
     }
 }
 
-export function deleteTask(): ThunkAction<Promise<void>, { task: IDetailsComponentProps }, {}, Action | Action & IPayload> {
+export function deleteTask(history: History): ThunkAction<Promise<void>, { task: IDetailsComponentProps }, {}, Action | Action & IPayload> {
     return async (dispatch, getState) => {
         const {task} = getState().task;
         if (!task) {
@@ -150,6 +144,10 @@ export function deleteTask(): ThunkAction<Promise<void>, { task: IDetailsCompone
                 dispatch(taskDeleteResponseError(responseBody.error));
             } else {
                 dispatch(taskDeleteResponseSuccess(responseBody));
+                // mark that we should update task list
+                dispatch(taskListNeedReload());
+                // Goto list
+                history.push('/items');
             }
         } catch (e) {
             dispatch(taskDeleteResponseError(e.toString()));
@@ -157,7 +155,7 @@ export function deleteTask(): ThunkAction<Promise<void>, { task: IDetailsCompone
     };
 }
 
-export function saveTask(): ThunkAction<Promise<void>, { task: IDetailsComponentProps }, {}, Action | Action & IPayload> {
+export function saveTask(history: History): ThunkAction<Promise<void>, { task: IDetailsComponentProps }, {}, Action | Action & IPayload> {
     return async (dispatch, getState) => {
         const {task, validation} = getState().task;
         if (!task) {
@@ -184,8 +182,11 @@ export function saveTask(): ThunkAction<Promise<void>, { task: IDetailsComponent
             if (!responseBody.success) {
                 dispatch(taskSaveResponseError(responseBody.error));
             } else {
-                // Goto list
                 dispatch(taskSaveResponseSuccess(responseBody));
+                // mark that we should update task list
+                dispatch(taskListNeedReload());
+                // Goto list
+                history.push('/items');
             }
         } catch (e) {
             dispatch(taskSaveResponseError(e.toString()));
