@@ -1,5 +1,5 @@
 import {IListComponentProps} from "./list";
-import {Action, AnyAction, Reducer} from "redux";
+import {Action, Reducer} from "redux";
 import {listActions} from "./list-actions";
 import {ITask, ITaskWithDelete} from "../../dto/task";
 import {IPayload} from "../../dto/payload";

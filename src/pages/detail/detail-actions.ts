@@ -1,5 +1,5 @@
 import {IPayload} from "../../dto/payload";
-import {Action, AnyAction} from "redux";
+import {Action} from "redux";
 import {ITask} from "../../dto/task";
 import {ITaskSaveResponse} from "../../dto/task-save-response";
 import {ITaskDeleteResponse} from "../../dto/task-delete-response";

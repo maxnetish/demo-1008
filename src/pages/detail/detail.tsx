@@ -65,42 +65,45 @@ export const DetailComponent = connect(mapStateToProps, mapDispatchToProps)(
             props.requestTask(idFromPath);
         }
 
-        console.log(props);
-
         return (
             <div>
                 {props.task ?
                     (
                         <Fragment>
                             <div className="page-header">
-                                <h1 className="page-header__text">Задача №{props.task.id}</h1>
+                                <h1 className="page-header-detail__text">Задача №{props.task.id}</h1>
                                 <div>
                                     <button type="button" className="app-button green"
                                             onClick={() => props.requestDelete(props.history)}>Удалить
                                     </button>
                                 </div>
                             </div>
-                            <TaskDetailFormComponent data={props.task} fieldChanged={{title: props.titleChanged}}
+                            <TaskDetailFormComponent data={props.task}
+                                                     fieldChanged={{title: props.titleChanged}}
                                                      showValidationError={props.saveOnce}
+                                                     onFormSubmit={e => {
+                                                         props.requestSave(props.history);
+                                                         e.preventDefault();
+                                                     }}
                                                      validation={props.validation}/>
+                            <div className="app-footer-buttons">
+                                {props.hasChanges ?
+                                    (
+                                        <button type="button" className="app-button blue" disabled={props.saving}
+                                                onClick={() => props.requestSave(props.history)}>
+                                            Сохранить
+                                        </button>
+                                    ) :
+                                    (
+                                        <Link className="app-button blue" to="/items">
+                                            Вернуться в список
+                                        </Link>
+                                    )
+                                }
+                            </div>
                         </Fragment>
                     ) : null
                 }
-                <div>
-                    {props.hasChanges ?
-                        (
-                            <button type="button" className="app-button blue" disabled={props.saving}
-                                    onClick={() => props.requestSave(props.history)}>
-                                Сохранить
-                            </button>
-                        ) :
-                        (
-                            <Link className="app-button blue" to="/items">
-                                Вернуться к списку
-                            </Link>
-                        )
-                    }
-                </div>
             </div>
         );
     }

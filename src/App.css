@@ -9,15 +9,22 @@
     margin-bottom: 50px;
 }
 
-.page-header .page-header__text {
+.page-header .page-header-main__text {
     flex-grow: 1;
     margin: 0;
     font-size: 32pt;
 }
 
+.page-header .page-header-detail__text {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 32pt;
+    font-weight: 500;
+}
+
 .app-button {
     display: inline-block;
-    width: 200px;
+    min-width: 200px;
     height: 50px;
     border: gray 1px solid;
     border-radius: 5px;
@@ -36,21 +43,26 @@ a.app-button {
     border: none;
     width: auto;
     height: auto;
+    min-width: 0;
     padding: 0;
     font-size: 28px;
     margin: 0 15px 0 0;
 }
-.app-button.icon:last-child{
+
+.app-button.icon:last-child {
     margin: 0 0 0 0;
 }
+
 .app-button.icon:focus {
     outline-color: #666666;
     outline-width: 1px;
     outline-style: dashed;
 }
+
 .app-button.icon.grey {
     color: #666666;
 }
+
 .app-button.icon.grey:hover {
     color: #000000;
 }
@@ -58,6 +70,7 @@ a.app-button {
 .app-button.icon.red {
     color: #f4583f;
 }
+
 .app-button.icon.red:hover {
     color: #ff0000;
 }
@@ -79,6 +92,23 @@ a.app-button {
     box-shadow: 0 0 3px 1px #39b54a;
 }
 
+.app-button.blue {
+    border-color: #0071bc;
+    color: #000000;
+}
+
+.app-button.blue:hover {
+    border-color: #0071bc;
+    background-color: #0071bc;
+    color: #ffffff;
+}
+
+.app-button.blue:focus {
+    border-color: #0071bc;
+    outline-color: transparent;
+    box-shadow: 0 0 3px 1px #0071bc;
+}
+
 .table-tasks {
     width: 100%;
     font-size: 14pt;
@@ -92,7 +122,7 @@ a.app-button {
 
 .table-tasks .buttons-cell {
     text-align: center;
- }
+}
 
 .app-modal {
     border-color: #f2f2f2;
@@ -120,6 +150,15 @@ a.app-button {
     font-size: 14pt;
 }
 
+.app-form label {
+    color: #666666;
+    font-weight: 500;
+}
+
 .red-warning {
     color: #ff0000;
+}
+
+.app-footer-buttons {
+    margin: 35px 0 0;
 }

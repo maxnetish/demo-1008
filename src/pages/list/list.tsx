@@ -1,6 +1,5 @@
 import * as React from "react";
-import {FormEvent} from "react";
-import {ITask, ITaskWithDelete, ITaskWithValidation} from "../../dto/task";
+import {ITask, ITaskWithDelete} from "../../dto/task";
 import {RouteComponentProps} from "react-router";
 import {ThunkDispatch} from "redux-thunk";
 import {AnyAction} from "redux";
@@ -73,13 +72,9 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
         props.requestList();
     }
 
-    function onNewTaskTitleChanged(e: FormEvent<HTMLInputElement>) {
-        props.newTaskTitleChanged(e.currentTarget.value);
-    }
-
     return (
         <div>
-            <ModalDialogComponent className="app-modal" openModal={props.newTaskDialogOpen}>
+            <ModalDialogComponent className="app-modal" openModal={props.newTaskDialogOpen} modalDismissed={props.dismissNewTaskDialog}>
                 <div className="dialog-new-task-ct">
                     <button type="button" className="app-button icon cross-close-dialog red"
                             onClick={props.dismissNewTaskDialog}>
@@ -87,7 +82,7 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
                     </button>
                     <TaskDetailFormComponent data={props.newTask} validation={props.newTaskValidation}
                                              showValidationError={props.newTaskSubmitOnce}
-                                             fieldChanged={{title: props.newTaskTitleChanged}}/>
+                                             fieldChanged={{title: props.newTaskTitleChanged}} onFormSubmit={e => {props.requestSaveNewTask(); e.preventDefault();}}/>
                     <div className="app-dialog-footer">
                         <button type="button" className="app-button green" disabled={props.newTaskSaving}
                                 onClick={props.requestSaveNewTask}>Создать
@@ -96,7 +91,7 @@ export const ListComponent = connect(mapStateToProps, mapDispatchToProps)((props
                 </div>
             </ModalDialogComponent>
             <div className="page-header">
-                <h1 className="page-header__text">Список задач</h1>
+                <h1 className="page-header-main__text">Список задач</h1>
                 <div>
                     <button type="button" className="app-button green" onClick={props.requestForNewTask}>Добавить
                     </button>

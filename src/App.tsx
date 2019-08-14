@@ -1,9 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
 import './../node_modules/purecss/build/pure.css';
 import './../node_modules/purecss/build/grids-responsive.css';
 import './App.css';
-import {BrowserRouter as Router, Route, Link, Redirect} from "react-router-dom";
+import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 import {ListComponent} from "./pages/list/list";
 import {DetailComponent} from "./pages/detail/detail";
 
